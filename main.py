@@ -42,12 +42,14 @@ args = parser.parse_args()
 
 def train(args):
 
-    x_train, y_train = dataset.load_imgs(args.train_file, crop_size=args.crop_size, shrunk_size=args.shrunk_size,min=args.num_train)
-    x_test, y_test = dataset.load_imgs(args.test_file, crop_size=args.crop_size, shrunk_size=args.shrunk_size,min=args.num_test)
+    # x_train, y_train = dataset.load_imgs(args.train_file, crop_size=args.crop_size, shrunk_size=args.shrunk_size,min=args.num_train)
+    # x_test, y_test = dataset.load_imgs(args.test_file, crop_size=args.crop_size, shrunk_size=args.shrunk_size,min=args.num_test)
+    x_train, y_train = dataset.load_imgs_label(args.train_file, crop_size=args.crop_size,min=10000)
+    x_test, y_test = dataset.load_imgs_label(args.test_file, crop_size=args.crop_size,min=1000)
 
 
-    x = tf.placeholder(tf.float32,shape = [args.batch_size,54,44,3])
-    y_ = tf.placeholder(tf.float32,shape = [args.batch_size,216,176,3])
+    x = tf.placeholder(tf.float32,shape = [args.batch_size,256,256,3])
+    y_ = tf.placeholder(tf.float32,shape = [args.batch_size,256,256,3])
     y = model.net(x,name='net')
     loss = tf.reduce_mean(tf.abs(y - y_))
 
