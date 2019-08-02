@@ -16,7 +16,7 @@ def EDSR(input,reuse = False,args=None,name='EDSR'):
         output = tf.clip_by_value(L_U+mean_x,0.0,255.0)
     return output
 
-def net(input,reuse=False,is_training=True,args=None,name='RDN'):
+def net(input,reuse=False,is_training=True,args=None,name='net'):
     with tf.variable_scope(name,reuse=reuse):
         F_1 = conv_b(input,64,name='conv2d_1')
         F_0 = conv_b(F_1,64,name='conv2d_2')

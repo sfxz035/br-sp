@@ -100,9 +100,9 @@ def train(args):
                 test_writer.add_summary(sess.run(summary_op, feed_dict={x: batch_input_test,
                                                                      y_: batch_labels_test}), m)
             if (count + 1) % 10000 == 0:
-                saver.save(sess, os.path.join(args.savenet_path, 'conv_RDN%d.ckpt-done' % (count)))
+                saver.save(sess, os.path.join(args.savenet_path, 'conv_net%d.ckpt-done' % (count)))
 def test(args):
-    savepath = './libSaveNet/savenet/GAN_net199999.ckpt-done'
+    savepath = './libSaveNet/savenet/conv_net199999.ckpt-done'
     path_2k = './data/valid/0801.png'
     path_set = './data/valid/comic.png'
     path_face2 = './data/valid/202441.jpg'
@@ -120,7 +120,7 @@ def test(args):
     img_label = np.expand_dims(img_norm,0)
     x = tf.placeholder(tf.float32,shape = [1,a_scale,b_scale, 3])
     y_ = tf.placeholder(tf.float32,shape = [1,a_scale*args.scale,b_scale*args.scale,3])
-    y = model.generator(x,args=args,name='generator',is_training=False)
+    y = model.net(x,args=args,name='net',is_training=False)
     loss = tf.reduce_mean(tf.square(y - y_))
     PSNR = compute_psnr(y,y_,convert=True)
     variables_to_restore = []
@@ -136,19 +136,17 @@ def test(args):
 
 
     np.save('./output/sp_img.npy',output)
-    # cv.imwrite('./output/sp_img.png',output,0)
-    # cv.imwrite('./output/lr_img.png',img_LR,0)
-    # cv.imwrite('./output/hr_img.png',img,0)
     print('loss_test:[%.8f],PSNR_test:[%.8f]' % (loss_test,PSNR_test))
+
 def predict(args):
-    savepath = './libSaveNet/savenet/GAN_net199999.ckpt-done'
+    savepath = './libSaveNet/savenet/conv_net199999.ckpt-done'
     path_face = './data/valid/2019-04-18-09-33-59-828886_1.bmp'
     img = cv.imread(path_face)
     img = img / (255. / 2.) - 1
     img_shape = np.shape(img)
     img_input = np.expand_dims(img,0)
     x = tf.placeholder(tf.float32,shape = [1,img_shape[0],img_shape[1], 3])
-    y = model.generator(x,args=args,name='generator',is_training=False)
+    y = model.net(x,args=args,name='net',is_training=False)
     variables_to_restore = []
     for v in tf.global_variables():
         variables_to_restore.append(v)
